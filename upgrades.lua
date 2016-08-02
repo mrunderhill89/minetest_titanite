@@ -1,3 +1,6 @@
+local enable_field_upgrades = true
+local enable_technic_upgrades = true
+
 local recipes = {
   [1] = function(item, material)
     return {
@@ -60,12 +63,14 @@ local function upgrade_recipe(item, level)
     or level > 3 and titanite.large_shard
     or titanite.small_shard
   -- Direct crafting recipe
-  minetest.register_craft({
-    output = upgrade_name,
-    recipe = recipes[quantity](prev,material)
-  })
+  if enable_field_upgrades then
+	  minetest.register_craft({
+		output = upgrade_name,
+		recipe = recipes[quantity](prev,material)
+	  })
+  end
   -- Technic Alloying Recipes
-  if technic then
+  if technic and enable_technic_upgrades then
     local shards = titanite.shard_count[level]
     technic.register_alloy_recipe({input = {prev, titanite.small_shard.." "..shards}, output = upgrade_name})
     technic.register_extractor_recipe({
